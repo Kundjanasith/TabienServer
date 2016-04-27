@@ -3,7 +3,7 @@ var bodyParser = require('body-parser');
 var port = process.env.PORT || 7777;
 // var users = require('./user');
 // var newu = require('./newuser');
-var newmodel = require('./newmodel');
+// var newmodel = require('./newmodel');
 var cors = require('cors')();
 
 
@@ -30,29 +30,125 @@ app.get('/', function (req, res) {
 // app.get('/user', function (req, res) {
 //     res.json(users.findAll());
 // });
-//
-// app.get('/user/:id', function (req, res) {
-//     var id = req.params.id;
-//     res.json(users.findById(id));
-// });
 
-// app.get('/newuser', function (req, res){
-// 	res.json(newu);
-// });
+// input = user.id
+// output = user
+app.get('/user/:id', function (req, res) {
+    console.log('user start');
+    var id = req.params.id;
+    console.log('about to query for id=' + id);
+    var users;
+    // connection.query('select * from user ', function(err, result){
+    //   console.log("hss"+result);
+    //   users = result;
+    // });
+    // console.log('user-po'+users);
+    // var user;
+    // for(var i = 0; i < users.length; i++){
+  	// 	if(parseInt(users[i].id)==parseInt(id)) {
+  	// 		console.log("success"+id);
+  	// 		user = users[i];
+  	// 	}
+  	// }
+    connection.query({
+        sql: 'SELECT * FROM user WHERE id = ?',
+        timeout: 40000, // 40s
+      },
+      [id],
+      function (error, results, fields) {
+        console.log('user query laew');
+        if (error) {
+          console.log('error in query woi: ' + error);
+          return;
+        }
+         res.json(results);
+        //  console.log('res'+res);
+        //  console.log('json'+res.json(results));
+        //  console.log('body'+res.body);
+        // console.log("user Parse"+results);
+        // return JSON.parse(results);
+      }
+    );
+});
 
+// input = user.id
+// output = all vehicle of user.id
+app.get('/vehicle/:id', function (req, res) {
+    var id = req.params.id;
+    console.log('vehicle start');
+    console.log('about to query for id=' + id);
+    var users;
+    connection.query({
+        sql: 'SELECT * FROM vehicle , vehiclemodel WHERE user_id = ? AND vehicle.vehiclemodel_id = vehiclemodel.id',
+        timeout: 40000, // 40s
+      },
+      [id],
+      function (error, results, fields) {
+        console.log('vehicle query laew');
+        if (error) {
+          console.log('error in query woi: ' + error);
+          return;
+        }
+        console.log("vehicle Parse"+results);
+        console.log(res.json(results));
+      }
+    );
+});
+
+// input = user.id
+// output = number of vehicles of user.id
+app.get('/numvehicle/:id', function (req, res) {
+    var id = req.params.id;
+    console.log('num vehicle start');
+    console.log('about to query for id=' + id);
+    var users;
+    connection.query({
+        sql: 'select count(*) as num from user, vehicle where vehicle.user_id = user.id and user.id = ?',
+        timeout: 40000, // 40s
+      },
+      [id],
+      function (error, results, fields) {
+        console.log('num vehicle query laew');
+        if (error) {
+          console.log('error in query woi: ' + error);
+          return;
+        }
+        console.log("num vehicle Parse"+results);
+        console.log(res.json(results));
+      }
+    );
+});
+
+// input = username && password
+// output = user
+app.get('/getuser/:username/:password', function (req, res){
+  console.log('get user start');
+  var username = req.params.username;
+  var password = req.params.password;
+  // console.log('about to query for id=' + id);
+  connection.query({
+      sql: 'SELECT * FROM user WHERE username = ? and password = ?',
+      timeout: 40000, // 40s
+    },
+    [username,password],
+    function (error, results, fields) {
+      console.log('user query laew');
+      if (error) {
+        console.log('error in query woi: ' + error);
+        return;
+      }
+       res.json(results);
+    }
+  );
+});
+
+// input = request model
+// output = add new model
 app.post('/newmodel',function (req,res) {
-  // console.log(req.body.brand);
-  // console.log(req.body.make);
-  // res.json(newmodel.addNewModel(req.body.brand,req.body.make));
-  // var json = req.body;
-  // console.log("json"+json.brand);
-  // newmodel.addNewModel(json);
-  // res.send('new model'+json);
   var model = {
     brand: req.body.brand,
     make: req.body.make
   };
-
   var query = connection.query('insert into vehiclemodel set ?', model, function (err, result){
     if (err){
       console.log("fuck"+err);
@@ -60,8 +156,49 @@ app.post('/newmodel',function (req,res) {
     }
     console.log(result);
   });
-
 });
+
+// input = request vehicle
+// output = add new vehicle
+app.post('/newvehicle',function (req,res) {
+  var vehicle = {
+    vehiclemodel_id: req.body.vehiclemodel_id,
+    first_block: req.body.first_block,
+    second_block: req.body.second_block,
+    province: req.body.province,
+    color: req.body.color,
+    user_id: req.body.user_id
+  };
+  var query = connection.query('insert into vehicle set ?', vehicle, function (err, result){
+    if (err){
+      console.log("fuck"+err);
+      return;
+    }
+    console.log(result);
+  });
+});
+
+// input = request user
+// output = add new user
+app.post('/newvehicle',function (req,res) {
+  var user = {
+    username: req.body.username,
+    password: req.body.password,
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    location: req.body.location
+  };
+  var query = connection.query('insert into user set ?', user, function (err, result){
+    if (err){
+      console.log("fuck"+err);
+      return;
+    }
+    console.log(result);
+  });
+});
+
+
+
 // app.post('/newuser', function (req, res) {
 //     //var json = req.body;
 //     // var json = {
