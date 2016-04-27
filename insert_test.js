@@ -7,7 +7,7 @@ var connection = mysql.createConnection({
   database: 'Tabien'
 });
 connection.connect();
-
+console.log('IS IT RUNNING?');
 var user = {
   rating_id: 1,
   timestamp: '27-April-2016',
