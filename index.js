@@ -12,7 +12,6 @@ app.get('/', function (req, res) {
 });
 
 app.get('/user', function (req, res) {
-    res.setHeader('Access-Control-Allow-Origin','*');
     res.json(users.findAll());
 });
 
