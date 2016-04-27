@@ -1,0 +1,20 @@
+{
+  "name": "node-mysql",
+  "version": "1.0.0",
+  "description": "Express Tutorial",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.13.4",
+    "express-handlebars": "^3.0.0",
+    "mysql": "^2.10.2",
+    "body-parser": "^1.15.0"
+  },
+  "devDependencies": {
+    "express": "^4.13.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
