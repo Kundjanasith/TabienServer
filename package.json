@@ -4,10 +4,11 @@
   "description": "Express Tutorial",
   "main": "index.js",
   "dependencies": {
+    "body-parser": "^1.15.0",
+    "cors": "^2.7.1",
     "express": "^4.13.4",
     "express-handlebars": "^3.0.0",
-    "mysql": "^2.10.2",
-    "body-parser": "^1.15.0"
+    "mysql": "^2.10.2"
   },
   "devDependencies": {
     "express": "^4.13.3"

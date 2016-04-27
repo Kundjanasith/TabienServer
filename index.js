@@ -6,7 +6,7 @@ var newu = require('./newuser');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
-
+app.use(cors);
 app.get('/', function (req, res) {
     res.send('<h1>Hello Node.js</h1>');
 });
@@ -24,7 +24,7 @@ app.get('/user/:id', function (req, res) {
 app.get('/newuser', function (req, res){
 	res.json(newu);
 });
-// app.post('/newuser', function (req, res) { 
+// app.post('/newuser', function (req, res) {
 //     //var json = req.body;
 //     // var json = {
 //     // 	"id": 2,
@@ -42,5 +42,3 @@ app.get('/newuser', function (req, res){
 app.listen(port, function() {
     console.log('Starting node.js on port ' + port);
 });
-
-
