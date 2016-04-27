@@ -3,7 +3,7 @@ var bodyParser = require('body-parser');
 var port = process.env.PORT || 7777;
 var users = require('./user');
 var newu = require('./newuser');
-
+var cors = require('cors')();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(cors);
