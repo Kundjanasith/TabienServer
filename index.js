@@ -258,6 +258,28 @@ app.post('/newrating',function (req,res) {
   });
 });
 
+// input = vid && rid
+// output = rate of vid
+app.get('/initRate/:id', function (req, res){
+  console.log('get user start');
+  var id = req.params.id;
+  // console.log('about to query for id=' + id);
+  connection.query({
+      sql: 'SELECT * FROM rating WHERE vehicle_id = ?',
+      timeout: 40000, // 40s
+    },
+    [id],
+    function (error, results, fields) {
+      console.log('user query laew');
+      if (error) {
+        console.log('error in query woi: ' + error);
+        return;
+      }
+       res.json(results);
+    }
+  );
+});
+
 // input = request rating
 // output = add new rating
 app.post('/newcomment',function (req,res){
