@@ -280,6 +280,48 @@ app.get('/initRate/:id', function (req, res){
   );
 });
 
+// input = vid
+// output = num rate of vid
+app.get('/numRate/:id', function (req, res){
+  console.log('get user start');
+  var id = req.params.id;
+  connection.query({
+      sql: 'SELECT count(*) as num FROM rating WHERE vehicle_id = ?',
+      timeout: 40000, // 40s
+    },
+    [id],
+    function (error, results, fields) {
+      console.log('user query laew');
+      if (error) {
+        console.log('error in query woi: ' + error);
+        return;
+      }
+       res.json(results);
+    }
+  );
+});
+
+// input = vid
+// output = avg rate of vid
+app.get('/avgRate/:id', function (req, res){
+  console.log('get user start');
+  var id = req.params.id;
+  connection.query({
+      sql: 'SELECT avg(rate) as avgRate FROM rating WHERE vehicle_id = ?',
+      timeout: 40000, // 40s
+    },
+    [id],
+    function (error, results, fields) {
+      console.log('user query laew');
+      if (error) {
+        console.log('error in query woi: ' + error);
+        return;
+      }
+       res.json(results);
+    }
+  );
+});
+
 // input = request rating
 // output = add new rating
 app.post('/newcomment',function (req,res){
