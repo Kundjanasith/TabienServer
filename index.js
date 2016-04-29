@@ -58,7 +58,7 @@ app.get('/user/:id', function (req, res) {
       function (error, results, fields) {
         console.log('user query laew');
         if (error) {
-          console.log('error in query woi: ' + error);
+          console.log('user error in query woi: ' + error);
           return;
         }
          res.json(results);
@@ -119,6 +119,28 @@ app.get('/numvehicle/:id', function (req, res) {
     );
 });
 
+// output = province
+app.get('/province', function (req, res) {
+    console.log('province start');
+    // console.log('about to query for id=' + id);
+    var users;
+    connection.query({
+        sql: 'select name from province',
+        timeout: 40000, // 40s
+      },
+      [],
+      function (error, results, fields) {
+        console.log('num vehicle query laew');
+        if (error) {
+          console.log('error in query woi: ' + error);
+          return;
+        }
+        console.log("province vehicle Parse"+results);
+        console.log(res.json(results));
+      }
+    );
+});
+
 // input = username && password
 // output = user
 app.get('/getuser/:username/:password', function (req, res){
@@ -158,18 +180,27 @@ app.post('/newmodel',function (req,res) {
   });
 });
 
+
 // input = request vehicle
 // output = add new vehicle
 app.post('/newvehicle',function (req,res) {
+  var vehiclemodel_Id;
+  var query1 = connection.query('select id from vehiclemodel where brand = ? and make = ?', req.body.brand, req.body.make, function (err, result){
+    vehiclemodel_Id = result;
+  });
+  var user_Id;
+  var query2 = connection.query('select id from user where firstname = ? and lastname = ?', req.body.firstname, req.body.lastname, function (err, result){
+    user_Id = result;
+  });
   var vehicle = {
-    vehiclemodel_id: req.body.vehiclemodel_id,
+    vehiclemodel_id: vehiclemodel_Id,
     first_block: req.body.first_block,
     second_block: req.body.second_block,
     province: req.body.province,
     color: req.body.color,
-    user_id: req.body.user_id
+    user_id: user_Id
   };
-  var query = connection.query('insert into vehicle set ?', vehicle, function (err, result){
+  var query3 = connection.query('insert into vehicle set ?', vehicle, function (err, result){
     if (err){
       console.log("fuck"+err);
       return;
@@ -180,7 +211,7 @@ app.post('/newvehicle',function (req,res) {
 
 // input = request user
 // output = add new user
-app.post('/newvehicle',function (req,res) {
+app.post('/newuser',function (req,res) {
   var user = {
     username: req.body.username,
     password: req.body.password,
@@ -196,8 +227,6 @@ app.post('/newvehicle',function (req,res) {
     console.log(result);
   });
 });
-
-
 
 // app.post('/newuser', function (req, res) {
 //     //var json = req.body;
