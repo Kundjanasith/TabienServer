@@ -141,6 +141,28 @@ app.get('/province', function (req, res) {
     );
 });
 
+// output = vehiclemodel
+app.get('/vehiclemodel', function (req, res) {
+    console.log('vehiclemodel start');
+    // console.log('about to query for id=' + id);
+    var users;
+    connection.query({
+        sql: 'select id, brand, make from vehiclemodel',
+        timeout: 40000, // 40s
+      },
+      [],
+      function (error, results, fields) {
+        console.log('num vehicle query laew');
+        if (error) {
+          console.log('error in query woi: ' + error);
+          return;
+        }
+        console.log("province vehicle Parse"+results);
+        console.log(res.json(results));
+      }
+    );
+});
+
 // input = username && password
 // output = user
 app.get('/getuser/:username/:password', function (req, res){
@@ -184,29 +206,24 @@ app.post('/newmodel',function (req,res) {
 // input = request vehicle
 // output = add new vehicle
 app.post('/newvehicle',function (req,res) {
-  var vehiclemodel_Id;
-  var query1 = connection.query('select id from vehiclemodel where brand = ? and make = ?', req.body.brand, req.body.make, function (err, result){
-    vehiclemodel_Id = result;
-  });
-  var user_Id;
-  var query2 = connection.query('select id from user where firstname = ? and lastname = ?', req.body.firstname, req.body.lastname, function (err, result){
-    user_Id = result;
-  });
+  console.log("Call lqew");
+  console.log(req.body.vehiclemodel_id);
   var vehicle = {
-    vehiclemodel_id: vehiclemodel_Id,
+    vehiclemodel_id: req.body.vehiclemodel_id,
     first_block: req.body.first_block,
     second_block: req.body.second_block,
     province: req.body.province,
     color: req.body.color,
-    user_id: user_Id
+    user_id: req.body.user_id,
   };
-  var query3 = connection.query('insert into vehicle set ?', vehicle, function (err, result){
+  connection.query('insert into vehicle set ?', vehicle, function (err, result){
     if (err){
       console.log("fuck"+err);
       return;
     }
     console.log(result);
   });
+  console.log("Q3");
 });
 
 // input = request user
