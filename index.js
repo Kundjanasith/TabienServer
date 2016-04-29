@@ -38,18 +38,6 @@ app.get('/user/:id', function (req, res) {
     var id = req.params.id;
     console.log('about to query for id=' + id);
     var users;
-    // connection.query('select * from user ', function(err, result){
-    //   console.log("hss"+result);
-    //   users = result;
-    // });
-    // console.log('user-po'+users);
-    // var user;
-    // for(var i = 0; i < users.length; i++){
-  	// 	if(parseInt(users[i].id)==parseInt(id)) {
-  	// 		console.log("success"+id);
-  	// 		user = users[i];
-  	// 	}
-  	// }
     connection.query({
         sql: 'SELECT * FROM user WHERE id = ?',
         timeout: 40000, // 40s
@@ -62,11 +50,52 @@ app.get('/user/:id', function (req, res) {
           return;
         }
          res.json(results);
-        //  console.log('res'+res);
-        //  console.log('json'+res.json(results));
-        //  console.log('body'+res.body);
-        // console.log("user Parse"+results);
-        // return JSON.parse(results);
+      }
+    );
+});
+
+// input = vehicle.id
+// output = user
+app.get('/userByVID/:id', function (req, res) {
+    console.log('user start');
+    var id = req.params.id;
+    console.log('about to query for id=' + id);
+    var users;
+    connection.query({
+        sql: 'SELECT * FROM user, vehicle WHERE user.id = vehicle.user_id AND vehicle.id = ?',
+        timeout: 40000, // 40s
+      },
+      [id],
+      function (error, results, fields) {
+        console.log('user query laew');
+        if (error) {
+          console.log('user error in query woi: ' + error);
+          return;
+        }
+         res.json(results);
+      }
+    );
+});
+
+// input = vehicle.id
+// output = model
+app.get('/modelByVID/:id', function (req, res) {
+    console.log('user start');
+    var id = req.params.id;
+    console.log('about to query for id=' + id);
+    var users;
+    connection.query({
+        sql: 'SELECT * FROM vehiclemodel, vehicle WHERE vehiclemodel.id = vehicle.vehiclemodel_id AND vehicle.id = ?',
+        timeout: 40000, // 40s
+      },
+      [id],
+      function (error, results, fields) {
+        console.log('user query laew');
+        if (error) {
+          console.log('user error in query woi: ' + error);
+          return;
+        }
+         res.json(results);
       }
     );
 });
@@ -80,6 +109,30 @@ app.get('/vehicle/:id', function (req, res) {
     var users;
     connection.query({
         sql: 'SELECT * FROM vehicle , vehiclemodel WHERE user_id = ? AND vehicle.vehiclemodel_id = vehiclemodel.id',
+        timeout: 40000, // 40s
+      },
+      [id],
+      function (error, results, fields) {
+        console.log('vehicle query laew');
+        if (error) {
+          console.log('error in query woi: ' + error);
+          return;
+        }
+        console.log("vehicle Parse"+results);
+        console.log(res.json(results));
+      }
+    );
+});
+
+// input = vehicle.id
+// output = vehicle of vehicler.id
+app.get('/vehicleByVID/:id', function (req, res) {
+    var id = req.params.id;
+    console.log('vehicle start');
+    console.log('about to query for id=' + id);
+    var users;
+    connection.query({
+        sql: 'SELECT * FROM vehicle WHERE id = ?',
         timeout: 40000, // 40s
       },
       [id],
@@ -184,6 +237,42 @@ app.get('/getuser/:username/:password', function (req, res){
        res.json(results);
     }
   );
+});
+
+// input = request rating
+// output = add new rating
+app.post('/newrating',function (req,res) {
+  var rating = {
+    user_id: req.body.user_id,
+    vehicle_id: req.body.vehicle_id,
+    rate: req.body.rate,
+    timestamp: req.body.timestamp,
+    message: req.body.message
+  };
+  connection.query('insert into rating set ?', rating, function(err, result){
+    if (err){
+      console.log("fuck"+err);
+      return;
+    }
+    console.log(result);
+  });
+});
+
+// input = request rating
+// output = add new rating
+app.post('/newcomment',function (req,res){
+  var comment = {
+      rating_id: req.body.rating_id,
+      timestamp: req.body.time,
+      message: req.body.msg
+  };
+  connection.query('insert into comment set ?', comment, function(err, result){
+    if (err){
+      console.log('fuck'+err);
+      return;
+    }
+    consoloe.log(result);
+  });
 });
 
 // input = request model
