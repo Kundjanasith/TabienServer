@@ -131,7 +131,7 @@ app.get('/vehicle/:id', function (req, res) {
     console.log('about to query for id=' + id);
     var users;
     connection.query({
-        sql: 'SELECT * FROM vehicle , vehiclemodel WHERE user_id = ? AND vehicle.vehiclemodel_id = vehiclemodel.id',
+        sql: 'SELECT * FROM vehiclemodel , vehicle WHERE user_id = ? AND vehicle.vehiclemodel_id = vehiclemodel.id',
         timeout: 40000, // 40s
       },
       [id],
@@ -420,6 +420,104 @@ app.post('/newuser',function (req,res) {
     console.log(result);
   });
 });
+
+// input = request user
+// output = update user
+app.post('/updateuser',function (req,res) {
+  var id = req.body.id;
+  var username = req.body.username;
+  var password = req.body.password;
+  var firstname = req.body.firstname;
+  var lastname = req.body.lastname;
+  var location = req.body.location;
+  var email = req.body.email;
+  connection.query({
+      sql: 'update user set username = ?, password = ?, firstname = ?, lastname = ?, location = ?, email = ? where id = ?',
+      timeout: 40000, // 40s
+    },
+    [username,password,firstname,lastname,locationm,email,id],
+    function (error, results, fields) {
+      console.log('user query laew');
+      if (error) {
+        console.log('error in query woi: ' + error);
+        return;
+      }
+       res.json(results);
+    }
+  );
+});
+
+// input = request vehicle
+// output = update vehicle
+app.post('/updatevehicle',function (req,res) {
+  var id = req.body.id;
+
+  // var user_id = req.body.user_id;
+  // var vehiclemodel_id = req.body.vehiclemodel_id;
+  var first = req.body.first_block;
+  var second = req.body.second_block;
+  var color = req.body.color;
+  var province = req.body.province;
+
+  console.log("ID"+id);
+  connection.query({
+      sql: 'update vehicle set first_block = ?, second_block = ?, color = ?, province = ? where id = ?',
+      timeout: 40000, // 40s
+    },
+    [first,second,color,province,id],
+    function (error, results, fields) {
+      console.log('user query laew');
+      if (error) {
+        console.log('error in query woi: ' + error);
+        return;
+      }
+       res.json(results);
+    }
+  );
+});
+
+// input =  user id && vehicle id
+// output = update vehicle
+app.post('/updatevehicle',function (req,res) {
+  var id = req.body.id;
+
+  connection.query({
+      sql: 'update user set username = ?, password = ?, firstname = ?, lastname = ?, location = ?, email = ? where id = ?',
+      timeout: 40000, // 40s
+    },
+    [username,password,firstname,lastname,location,email,id],
+    function (error, results, fields) {
+      console.log('user query laew');
+      if (error) {
+        console.log('error in query woi: ' + error);
+        return;
+      }
+       res.json(results);
+    }
+  );
+});
+
+// input = request user
+// output = drop user
+app.post('/deleteuser',function (req,res) {
+  var id = req.body.id;
+  connection.query({
+      sql: 'delete from user where id = ?',
+      timeout: 40000, // 40s
+    },
+    [id],
+    function (error, results, fields) {
+      console.log('user query laew');
+      if (error) {
+        console.log('error in query woi: ' + error);
+        return;
+      }
+       res.json(results);
+    }
+  );
+});
+
+
 
 // app.post('/newuser', function (req, res) {
 //     //var json = req.body;
