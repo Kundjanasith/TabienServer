@@ -100,6 +100,29 @@ app.get('/modelByVID/:id', function (req, res) {
     );
 });
 
+// input = rate
+// output = number of rate
+app.get('/progressRate/:rate', function (req, res) {
+    console.log('user start');
+    var rate = req.params.rate;
+    // console.log('about to query for id=' + id);
+    var users;
+    connection.query({
+        sql: 'SELECT count(*) as proRate FROM rating where rate = ?',
+        timeout: 40000, // 40s
+      },
+      [rate],
+      function (error, results, fields) {
+        console.log('user query laew');
+        if (error) {
+          console.log('user error in query woi: ' + error);
+          return;
+        }
+         res.json(results);
+      }
+    );
+});
+
 // input = user.id
 // output = all vehicle of user.id
 app.get('/vehicle/:id', function (req, res) {
